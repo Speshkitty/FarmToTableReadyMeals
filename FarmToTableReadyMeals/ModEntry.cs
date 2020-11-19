@@ -6,7 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
- 
+using System.Text.RegularExpressions;
+
 namespace FarmToTableReadyMeals
 {
     public class ModEntry : Mod
@@ -44,10 +45,19 @@ namespace FarmToTableReadyMeals
                 recipe = new CookingRecipe
                 {
                     Name = kvp.Key,
-                    OutputID = int.Parse(recipeData[2]),
                     Source = recipeData[3],
                     MysteryText = recipeData[1]
                 };
+
+                if(Regex.IsMatch(recipeData[2], "[0-9]+ [0-9]+"))
+                {
+                    recipe.OutputID = int.Parse(recipeData[2].Split(' ')[0]);
+                    recipe.Amount  = int.Parse(recipeData[2].Split(' ')[1]);
+                }
+                else
+                {
+                    recipe.OutputID = int.Parse(recipeData[2]);
+                }
 
                 for (int i = 0; i < ingredientPairs.Length; i = i + 2)
                 {
@@ -160,7 +170,14 @@ namespace FarmToTableReadyMeals
 
                     if (newToAdd.Count == 0)
                     {
-                        ingredientsFound.Add(IngredientPairs.Key, IngredientPairs.Value);
+                        if (ingredientsFound.TryGetValue(IngredientPairs.Key, out int amount))
+                        {
+                            ingredientsFound[IngredientPairs.Key] += amount;
+                        }
+                        else
+                        {
+                            ingredientsFound.Add(IngredientPairs.Key, IngredientPairs.Value);
+                        }
                     }
                     else
                     {

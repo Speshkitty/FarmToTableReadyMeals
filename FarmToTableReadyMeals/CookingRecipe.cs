@@ -9,7 +9,7 @@ namespace FarmToTableReadyMeals
     class CookingRecipe
     {
         internal string Name { get; set; }
-        internal int Amount { get; } = 1;
+        internal int Amount { get; set; } = 1;
         internal int OutputID { get; set; }
         internal string Source { get; set; }
         internal string MysteryText { get; set; }
