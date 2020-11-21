@@ -35,7 +35,7 @@ namespace FarmToTableReadyMeals
             string[] recipeData;
             string[] ingredientPairs;
             CookingRecipe recipe;
-
+            
             //Construct a list of recipes for our internal use
             foreach (KeyValuePair<string, string> kvp in CraftingRecipe.cookingRecipes)
             {
@@ -69,6 +69,8 @@ namespace FarmToTableReadyMeals
 
                 craftingResults.Add(recipe);
             }
+
+            int AddedRecipes = 0;
 
             Dictionary<int, int> AllIngredients = new Dictionary<int, int>();
             foreach (CookingRecipe testRecipe in craftingResults)
@@ -111,8 +113,10 @@ namespace FarmToTableReadyMeals
                     }
 
                     CraftingRecipe.cookingRecipes.Add(NameToAdd, newRecipe.GetValue());
+                    AddedRecipes++;
                 }
             }
+            Monitor.Log($"Added {AddedRecipes} recipes!", LogLevel.Info);
         }
         
         private void GameLoop_SaveLoaded(object sender, SaveLoadedEventArgs e)
@@ -125,6 +129,7 @@ namespace FarmToTableReadyMeals
                     foreach (string s in RecipesAdded[key])
                     {
                         Game1.player.cookingRecipes.Add(s, 0);
+                        Monitor.Log($"Unlocked \"{s}\" for player as a related recipe was unlocked!", LogLevel.Info);
                     }
                 }
             };
@@ -135,6 +140,7 @@ namespace FarmToTableReadyMeals
                     foreach (string s in RecipesAdded[key])
                     {
                         Game1.player.cookingRecipes.Remove(s);
+                        Monitor.Log($"Removed \"{s}\" for player as a related recipe was removed!", LogLevel.Info);
                     }
                 }
             };
